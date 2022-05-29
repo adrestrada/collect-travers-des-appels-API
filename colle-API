@@ -1,0 +1,46 @@
+#Exercice meteo Accuweather
+
+import requests
+import json
+
+# --------- valeur de test ---------
+STATE = "canada"
+ville = "Montreal"
+API_KEY = "Votre clé API Accuweather"
+# ---------------------------------
+ 
+def get_location_key():
+    api_location_url = "http://dataservice.accuweather.com/locations/v1/search?q="  + ville+"&apikey="+ API_KEY
+    try:
+        f = requests.get(api_location_url)
+    except:
+        return []
+    else:
+        json_conditions = f.json()
+        #print(json_conditions)
+        f.close()
+    return json_conditions
+def get_meteo(locationkey):
+    api_conditions_url = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/"+locationkey +"?apikey=" + API_KEY
+    try:
+        f = requests.get(api_conditions_url)
+    except:
+        return []
+    else:
+        json_conditions = f.json()
+        #print(json_conditions)
+        f.close()
+    return json_conditions
+def main():
+    print_header()
+    location = get_location_key()
+    key = location[0]["Key"]
+    #print("key:", key)
+    #obtenir meteo
+    conditions_meteo = get_meteo(key)
+    print("Minimum:",conditions_meteo['DailyForecasts'][0]['Temperature']['Minimum']['Value'])
+    print("Maximum:",conditions_meteo['DailyForecasts'][0]['Temperature']['Maximum']['Value'])
+
+
+if __name__ =='__main__':
+    main()
